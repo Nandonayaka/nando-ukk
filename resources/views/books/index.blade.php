@@ -2,9 +2,9 @@
 
 @section('content')
 <div class="flex items-center justify-between mb-10">
-    <h1 class="text-4xl font-extrabold tracking-tight">Records</h1>
+    <h1 class="text-4xl font-extrabold tracking-tight">Data Buku</h1>
     <a href="{{ route('books.create') }}" class="bg-black text-white px-6 py-3 rounded-full font-semibold text-sm hover:bg-gray-800 transition shadow-md flex items-center gap-2">
-        <i class="fas fa-plus text-[10px]"></i> Add New Book
+        <i class="fas fa-plus text-[10px]"></i> Tambah Buku Baru
     </a>
 </div>
 
@@ -13,12 +13,12 @@
         <thead class="bg-gray-50 border-b border-gray-200">
             <tr>
                 <th class="px-8 py-5 text-[11px] font-bold uppercase tracking-widest text-gray-400">ID</th>
-                <th class="px-8 py-5 text-[11px] font-bold uppercase tracking-widest text-gray-400">Book Details</th>
+                <th class="px-8 py-5 text-[11px] font-bold uppercase tracking-widest text-gray-400">Detail Buku</th>
                 <th class="px-8 py-5 text-[11px] font-bold uppercase tracking-widest text-gray-400">Stok</th>
-                <th class="px-8 py-5 text-[11px] font-bold uppercase tracking-widest text-gray-400">Author</th>
-                <th class="px-8 py-5 text-[11px] font-bold uppercase tracking-widest text-gray-400">Year</th>
-                <th class="px-8 py-5 text-[11px] font-bold uppercase tracking-widest text-gray-400">Price</th>
-                <th class="px-8 py-5 text-[11px] font-bold uppercase tracking-widest text-gray-400 text-center">Actions</th>
+                <th class="px-8 py-5 text-[11px] font-bold uppercase tracking-widest text-gray-400">Penulis</th>
+                <th class="px-8 py-5 text-[11px] font-bold uppercase tracking-widest text-gray-400">Tahun</th>
+                <th class="px-8 py-5 text-[11px] font-bold uppercase tracking-widest text-gray-400">Harga</th>
+                <th class="px-8 py-5 text-[11px] font-bold uppercase tracking-widest text-gray-400 text-center">Aksi</th>
             </tr>
         </thead>
         <tbody class="divide-y divide-gray-100">
@@ -39,7 +39,7 @@
                             </div>
                             <div>
                                 <div class="font-bold text-black mb-1 text-sm">{{ $book->judul }}</div>
-                                <div class="text-[13px] text-gray-500 line-clamp-1 max-w-[200px]">{{ $book->deskripsi ?: 'No description' }}</div>
+                                <div class="text-[13px] text-gray-500 line-clamp-1 max-w-[200px]">{{ $book->deskripsi ?: 'Tidak ada deskripsi' }}</div>
                             </div>
                         </div>
                     </td>
@@ -49,20 +49,20 @@
                     <td class="px-8 py-6 font-semibold text-sm text-gray-600">{{ $book->penulis }}</td>
                     <td class="px-8 py-6 font-bold text-sm text-black">{{ $book->tahun_terbit }}</td>
                     <td class="px-8 py-6 font-semibold text-sm text-black">
-                        {{ $book->harga ? 'Rp ' . number_format($book->harga, 0, ',', '.') : 'Free' }}
+                        {{ $book->harga ? 'Rp ' . number_format($book->harga, 0, ',', '.') : 'Gratis' }}
                     </td>
                     <td class="px-8 py-6 text-center">
                         <div class="flex justify-center gap-3">
-                            <a href="{{ route('books.show', $book->id) }}" class="text-gray-400 hover:text-black transition p-2" title="Show">
+                            <a href="{{ route('books.show', $book->id) }}" class="text-gray-400 hover:text-black transition p-2" title="Lihat">
                                 <i class="fas fa-eye text-sm"></i>
                             </a>
-                            <a href="{{ route('books.edit', $book->id) }}" class="text-gray-400 hover:text-black transition p-2" title="Edit">
+                            <a href="{{ route('books.edit', $book->id) }}" class="text-gray-400 hover:text-black transition p-2" title="Ubah">
                                 <i class="fas fa-pen text-sm"></i>
                             </a>
                             <form action="{{ route('books.destroy', $book->id) }}" method="POST" class="inline-block">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="text-gray-400 hover:text-red-500 transition p-2 cursor-pointer" onclick="return confirm('Delete this record?')" title="Delete">
+                                <button type="submit" class="text-gray-400 hover:text-red-500 transition p-2 cursor-pointer" onclick="return confirm('Hapus data ini?')" title="Hapus">
                                     <i class="fas fa-trash text-sm"></i>
                                 </button>
                             </form>
@@ -76,7 +76,7 @@
                             <!-- Minimalist vector illustration -->
                             <img src="https://api.dicebear.com/9.x/open-peeps/svg?seed=Lucky&size=100&face=smile" class="w-32 mx-auto grayscale opacity-50">
                         </div>
-                        <p class="font-bold text-sm tracking-widest uppercase">No books found in the library.</p>
+                        <p class="font-bold text-sm tracking-widest uppercase">Tidak ada buku ditemukan di perpustakaan.</p>
                     </td>
                 </tr>
             @endforelse

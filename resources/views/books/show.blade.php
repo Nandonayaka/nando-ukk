@@ -4,7 +4,7 @@
 <div class="flex items-center justify-between mb-10">
     <div class="flex items-center gap-4">
         <div>
-            <h1 class="text-4xl font-extrabold tracking-tight mb-2">Book Detail</h1>
+            <h1 class="text-4xl font-extrabold tracking-tight mb-2">Detail Buku</h1>
             <p class="text-gray-400 text-[11px] font-bold uppercase tracking-widest bg-gray-100 inline-block px-3 py-1 rounded-full">ID: #{{ str_pad($book->id, 3, '0', STR_PAD_LEFT) }}</p>
         </div>
     </div>
@@ -13,7 +13,7 @@
         $backRoute = auth()->user()->role === 'admin' ? route('books.index') : route('katalog.index');
     @endphp
     <a href="{{ $backRoute }}" class="bg-white border border-gray-300 text-black hover:border-black px-6 py-3 rounded-full font-semibold text-[13px] transition flex items-center gap-2 shadow-sm">
-        <i class="fas fa-arrow-left text-[10px]"></i> Go Back
+        <i class="fas fa-arrow-left text-[10px]"></i> Kembali
     </a>
 </div>
 
@@ -58,7 +58,7 @@
         </div>
 
         <div class="mb-8 flex-1">
-            <h3 class="text-[13px] font-extrabold uppercase text-gray-900 mb-3 tracking-widest">Synopsis</h3>
+            <h3 class="text-[13px] font-extrabold uppercase text-gray-900 mb-3 tracking-widest">Sinopsis</h3>
             <p class="text-gray-500 text-[15px] font-medium leading-relaxed">
                 {{ $book->deskripsi ?: 'Buku yang luar biasa. Harap hubungi pustakawan jika Anda butuh penjelasan lebih rici terkait dengan konten buku yang di maksud.' }}
             </p>
@@ -66,9 +66,9 @@
 
         <div class="mt-auto flex flex-col sm:flex-row sm:items-center justify-between gap-6 border-t border-gray-100 pt-8">
             <div>
-                <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Pricing</span>
+                <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Harga</span>
                 <span class="font-bold text-3xl text-black leading-none">
-                    {{ $book->harga ? 'Rp ' . number_format($book->harga, 0, ',', '.') : 'Free' }}
+                    {{ $book->harga ? 'Rp ' . number_format($book->harga, 0, ',', '.') : 'Gratis' }}
                 </span>
             </div>
 
@@ -77,11 +77,11 @@
                     @csrf
                     @if($book->stok > 0)
                         <button class="bg-black text-white hover:bg-gray-800 font-bold text-[13px] px-8 py-4 rounded-full flex items-center justify-center gap-3 transition shadow-md w-full sm:w-auto">
-                            <i class="fas fa-shopping-bag"></i> Checkout
+                            <i class="fas fa-shopping-bag"></i> Beli Sekarang
                         </button>
                     @else
                         <button type="button" disabled class="bg-gray-200 text-gray-400 font-bold text-[13px] px-8 py-4 rounded-full flex items-center justify-center gap-3 w-full sm:w-auto cursor-not-allowed">
-                            <i class="fas fa-shopping-bag"></i> Out of Stock
+                            <i class="fas fa-shopping-bag"></i> Stok Habis
                         </button>
                     @endif
                 </form>

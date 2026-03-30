@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Library System</title>
+    <title>Sistem Perpustakaan</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -25,29 +25,29 @@
     <aside class="w-64 bg-white border-r border-gray-200 h-screen flex flex-col flex-shrink-0 z-20">
         <div class="h-20 flex items-center px-8 border-b border-gray-100">
             <h1 class="font-extrabold text-2xl tracking-tight text-black flex items-center gap-2">
-                <i class="fas fa-book"></i> Perpus.
+                <i class="fas fa-book"></i> PustakaKu.
             </h1>
         </div>
         <nav class="flex-1 px-4 py-8 space-y-2 overflow-y-auto">
             @auth
                 @if(auth()->user()->role === 'admin')
                     <a href="{{ route('books.index') }}" class="flex items-center gap-4 px-4 py-3 {{ request()->routeIs('books.*') ? 'bg-black text-white' : 'bg-transparent text-gray-500 hover:bg-gray-50 hover:text-black' }} rounded-2xl font-semibold text-[13px] transition">
-                        <i class="fas fa-layer-group {{ request()->routeIs('books.*') ? 'text-white' : 'text-gray-400' }}"></i> <span>Library</span>
+                        <i class="fas fa-layer-group {{ request()->routeIs('books.*') ? 'text-white' : 'text-gray-400' }}"></i> <span>Perpustakaan</span>
                     </a>
                 @endif
                 <a href="{{ route('katalog.index') }}" class="flex items-center gap-4 px-4 py-3 {{ request()->routeIs('katalog.*') ? 'bg-black text-white' : 'bg-transparent text-gray-500 hover:bg-gray-50 hover:text-black' }} rounded-2xl font-semibold text-[13px] transition">
-                    <i class="fas fa-compass {{ request()->routeIs('katalog.*') ? 'text-white' : 'text-gray-400' }}"></i> <span>Explore</span>
+                    <i class="fas fa-compass {{ request()->routeIs('katalog.*') ? 'text-white' : 'text-gray-400' }}"></i> <span>Jelajah</span>
                 </a>
                 
                 @if(auth()->user()->role === 'pelanggan')
                     <a href="{{ route('history.index') }}" class="flex items-center gap-4 px-4 py-3 {{ request()->routeIs('history.*') ? 'bg-black text-white' : 'bg-transparent text-gray-500 hover:bg-gray-50 hover:text-black' }} rounded-2xl font-semibold text-[13px] transition">
-                        <i class="fas fa-history {{ request()->routeIs('history.*') ? 'text-white' : 'text-gray-400' }}"></i> <span>History</span>
+                        <i class="fas fa-history {{ request()->routeIs('history.*') ? 'text-white' : 'text-gray-400' }}"></i> <span>Riwayat</span>
                     </a>
                 @endif
             @endauth
         </nav>
         <div class="p-6 border-t border-gray-100 mt-auto">
-            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest text-center">Version 1.0.0</p>
+            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest text-center">Versi 1.0.0</p>
         </div>
     </aside>
 
@@ -55,13 +55,13 @@
     <div class="flex-1 flex flex-col h-screen overflow-hidden relative bg-dots">
         <!-- TOPBAR -->
         <header class="h-20 bg-white border-b border-gray-100 flex items-center justify-between px-10 flex-shrink-0 z-10 w-full">
-            <div class="font-bold text-gray-400 text-sm uppercase tracking-widest">Dashboard Area</div>
+            <div class="font-bold text-gray-400 text-sm uppercase tracking-widest">Area Dasbor</div>
             <div class="flex items-center gap-4">
                 <div class="relative group cursor-pointer inline-block">
                     <div class="flex items-center gap-3 bg-white border border-gray-200 px-4 py-2 rounded-full hover:border-black transition">
                         <div class="text-right">
-                            <p class="font-bold text-[13px] text-black leading-none">{{ auth()->user()->name ?? 'User' }}</p>
-                            <p class="text-[10px] text-gray-500 mt-1 uppercase font-bold">{{ auth()->user()->role ?? 'Guest' }}</p>
+                            <p class="font-bold text-[13px] text-black leading-none">{{ auth()->user()->name ?? 'Pengguna' }}</p>
+                            <p class="text-[10px] text-gray-500 mt-1 uppercase font-bold">{{ auth()->user()->role ?? 'Tamu' }}</p>
                         </div>
                         <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600"><i class="fas fa-user text-[11px]"></i></div>
                     </div>
@@ -71,7 +71,7 @@
                              <form action="{{ route('logout') }}" method="POST" class="m-0">
                                 @csrf
                                 <button type="submit" class="w-full text-left px-5 py-2.5 text-[13px] font-semibold text-red-500 hover:bg-gray-50 transition flex items-center gap-3">
-                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                    <i class="fas fa-sign-out-alt"></i> Keluar
                                 </button>
                             </form>
                         </div>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Join Us - Register</title>
+    <title>Gabung - Daftar</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -17,7 +17,7 @@
         <div class="w-full flex justify-center items-center order-2 md:order-1">
             <div class="relative w-full max-w-2xl group">
                 <img src="{{ asset('img/image-login.png') }}" 
-                     alt="Join Us" 
+                     alt="Gabung" 
                      class="w-full h-auto object-contain transform transition-transform duration-700 group-hover:scale-105">
             </div>
         </div>
@@ -26,11 +26,11 @@
             <div class="max-w-md w-full mx-auto md:mx-0">
                 
                 <h1 class="text-5xl md:text-6xl font-extrabold mb-4 tracking-tighter leading-tight text-black">
-                    Join Perpus!
+                    PustakaKu
                 </h1>
                 
                 <p class="text-sm md:text-base text-gray-500 mb-8 leading-relaxed font-medium">
-                    Create an account to start your digital library journey and explore thousands of books!
+                    Ayo mulai membaca di PustakaKu.
                 </p>
 
                 @if ($errors->any())
@@ -49,20 +49,20 @@
                     <div class="space-y-1">
                         <input type="text" name="name" value="{{ old('name') }}" 
                                class="w-full px-6 py-4 rounded-2xl bg-gray-50 border border-gray-200 focus:border-black focus:bg-white focus:ring-0 outline-none transition-all duration-300 text-sm font-medium placeholder-gray-400" 
-                               placeholder="Full Name" required>
+                               placeholder="Nama Lengkap" required>
                     </div>
 
                     <div class="space-y-1">
                         <input type="email" name="email" value="{{ old('email') }}" 
                                class="w-full px-6 py-4 rounded-2xl bg-gray-50 border border-gray-200 focus:border-black focus:bg-white focus:ring-0 outline-none transition-all duration-300 text-sm font-medium placeholder-gray-400" 
-                               placeholder="Email Address" required>
+                               placeholder="Alamat Email" required>
                     </div>
                     
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div class="space-y-1">
                             <input type="password" name="password" 
                                    class="w-full px-6 py-4 rounded-2xl bg-gray-50 border border-gray-200 focus:border-black focus:bg-white focus:ring-0 outline-none transition-all duration-300 text-sm font-medium placeholder-gray-400" 
-                                   placeholder="Password" required>
+                                   placeholder="Kata Sandi" required>
                         </div>
                         <div class="space-y-1">
                             <select name="role" 
@@ -76,7 +76,7 @@
                     <div class="pt-4">
                         <button type="submit" 
                                 class="w-full md:w-auto px-10 py-4 bg-black text-white hover:bg-gray-800 font-bold text-sm rounded-2xl transition-all duration-300 shadow-lg active:scale-95 flex items-center justify-center">
-                            REGISTER
+                            DAFTAR
                         </button>
                     </div>
                 </form>

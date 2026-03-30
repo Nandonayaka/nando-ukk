@@ -8,11 +8,11 @@
         @foreach($books->take(3) as $key => $item)
         <div class="min-w-full h-full flex flex-col md:flex-row items-center justify-center px-10 md:px-20 gap-8 md:gap-16 bg-white py-12 md:py-0">
             <div class="flex-1 text-center md:text-left">
-                <span class="inline-block bg-black text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest mb-4">Recommended Product</span>
+                <span class="inline-block bg-black text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest mb-4">Produk Rekomendasi</span>
                 <h2 class="text-3xl md:text-5xl font-black text-black leading-tight mb-4 line-clamp-2 uppercase italic tracking-tighter">{{ $item->judul }}</h2>
                 <p class="text-[13px] text-gray-500 font-medium mb-6 line-clamp-2 max-w-md mx-auto md:mx-0">{{ $item->deskripsi }}</p>
                 <a href="{{ route('books.show', $item->id) }}" class="inline-flex items-center gap-2 bg-black text-white px-8 py-3.5 rounded-full font-bold text-[12px] hover:bg-gray-800 transition shadow-lg">
-                    See Collection <i class="fas fa-arrow-right text-[10px]"></i>
+                    Lihat Koleksi <i class="fas fa-arrow-right text-[10px]"></i>
                 </a>
             </div>
             <div class="flex-shrink-0 flex justify-center items-center">
@@ -69,8 +69,8 @@
 
 <div class="flex items-center justify-between mb-10">
     <div>
-        <h1 class="text-4xl font-extrabold tracking-tight mb-2">Explore</h1>
-        <p class="text-gray-500 text-[13px] font-medium">Discover our collection of amazing books.</p>
+        <h1 class="text-4xl font-extrabold tracking-tight mb-2">Jelajah</h1>
+        <p class="text-gray-500 text-[13px] font-medium">Temukan koleksi buku luar biasa kami.</p>
     </div>
 </div>
 
@@ -111,7 +111,7 @@
                 
                 <div class="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
                     <span class="font-bold text-[14px] text-black">
-                        {{ $book->harga ? 'Rp ' . number_format($book->harga, 0, ',', '.') : 'Free' }}
+                        {{ $book->harga ? 'Rp ' . number_format($book->harga, 0, ',', '.') : 'Gratis' }}
                     </span>
                     <div class="w-8 h-8 rounded-full bg-gray-50 group-hover:bg-black group-hover:text-white text-gray-300 flex items-center justify-center transition-colors">
                         <i class="fas fa-arrow-right text-[10px]"></i>

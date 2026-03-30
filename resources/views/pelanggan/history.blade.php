@@ -3,8 +3,8 @@
 @section('content')
 <div class="flex items-center justify-between mb-10">
     <div>
-        <h1 class="text-4xl font-extrabold tracking-tight mb-2">My History</h1>
-        <p class="text-gray-500 text-[13px] font-medium">Record of your purchased books.</p>
+        <h1 class="text-4xl font-extrabold tracking-tight mb-2">Riwayat Saya</h1>
+        <p class="text-gray-500 text-[13px] font-medium">Catatan buku yang telah Anda beli.</p>
     </div>
 </div>
 
@@ -12,9 +12,9 @@
     <table class="w-full text-left border-collapse">
         <thead class="bg-gray-50 border-b border-gray-200">
             <tr>
-                <th class="px-8 py-5 text-[11px] font-bold uppercase tracking-widest text-gray-400">Date</th>
-                <th class="px-8 py-5 text-[11px] font-bold uppercase tracking-widest text-gray-400">Book Details</th>
-                <th class="px-8 py-5 text-[11px] font-bold uppercase tracking-widest text-gray-400">Price</th>
+                <th class="px-8 py-5 text-[11px] font-bold uppercase tracking-widest text-gray-400">Tanggal</th>
+                <th class="px-8 py-5 text-[11px] font-bold uppercase tracking-widest text-gray-400">Detail Buku</th>
+                <th class="px-8 py-5 text-[11px] font-bold uppercase tracking-widest text-gray-400">Harga</th>
                 <th class="px-8 py-5 text-[11px] font-bold uppercase tracking-widest text-gray-400 text-center">Status</th>
             </tr>
         </thead>
@@ -42,7 +42,7 @@
                         </div>
                     </td>
                     <td class="px-8 py-6 font-semibold text-[13px] text-black">
-                        {{ isset($transaction->book->harga) ? ($transaction->book->harga ? 'Rp ' . number_format($transaction->book->harga, 0, ',', '.') : 'Free') : '-' }}
+                        {{ isset($transaction->book->harga) ? ($transaction->book->harga ? 'Rp ' . number_format($transaction->book->harga, 0, ',', '.') : 'Gratis') : '-' }}
                     </td>
                     <td class="px-8 py-6 text-center">
                         <span class="bg-green-50 text-green-600 border border-green-200 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">
@@ -56,8 +56,8 @@
                         <div class="mb-4">
                             <img src="https://api.dicebear.com/9.x/open-peeps/svg?seed=History&size=100&face=smile" class="w-32 mx-auto grayscale opacity-50">
                         </div>
-                        <p class="font-bold text-sm tracking-widest uppercase">No purchased history yet.</p>
-                        <a href="{{ route('katalog.index') }}" class="mt-4 inline-block bg-black text-white px-6 py-2.5 rounded-full font-semibold text-[13px] hover:bg-gray-800 transition">Start Browsing</a>
+                        <p class="font-bold text-sm tracking-widest uppercase">Belum ada riwayat pembelian.</p>
+                        <a href="{{ route('katalog.index') }}" class="mt-4 inline-block bg-black text-white px-6 py-2.5 rounded-full font-semibold text-[13px] hover:bg-gray-800 transition">Mulai Menjelajah</a>
                     </td>
                 </tr>
             @endforelse
