@@ -37,6 +37,11 @@
                 <label class="block text-[11px] font-bold uppercase tracking-widest text-gray-500">Nama Penulis *</label>
                 <input type="text" name="penulis" value="{{ old('penulis', $book->penulis) }}" required class="w-full px-5 py-3.5 rounded-2xl bg-gray-50 border border-gray-200 focus:border-black focus:bg-white focus:ring-0 outline-none transition text-[13px] font-medium placeholder-gray-400">
             </div>
+
+            <div class="space-y-2">
+                <label class="block text-[11px] font-bold uppercase tracking-widest text-gray-500">Nama Penerbit *</label>
+                <input type="text" name="penerbit" value="{{ old('penerbit', $book->penerbit) }}" required class="w-full px-5 py-3.5 rounded-2xl bg-gray-50 border border-gray-200 focus:border-black focus:bg-white focus:ring-0 outline-none transition text-[13px] font-medium placeholder-gray-400">
+            </div>
             
             <div class="space-y-2">
                 <label class="block text-[11px] font-bold uppercase tracking-widest text-gray-500">Tahun Terbit *</label>

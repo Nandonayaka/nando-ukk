@@ -2,11 +2,13 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
 
 Route::get('/', function () {
     if (auth()->check()) {
-        return auth()->user()->role === 'admin' ? redirect()->route('books.index') : redirect()->route('katalog.index');
+        $isAdmin = (auth()->user()->role === 'administrator' || auth()->user()->role === 'petugas');
+        return $isAdmin ? redirect()->route('books.index') : redirect()->route('katalog.index');
     }
     return view('auth.login');
 });
@@ -20,6 +22,9 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middl
 
 // Protected Routes
 Route::middleware(['auth'])->group(function () {
+    // Member Management (Administrator Only)
+    Route::resource('users', UserController::class)->middleware('auth');
+    
     // Pelanggan Route
     Route::get('/katalog', [BookController::class, 'katalog'])->name('katalog.index');
     Route::get('/history', [BookController::class, 'history'])->name('history.index');
@@ -29,13 +34,13 @@ Route::middleware(['auth'])->group(function () {
     
     // Create must come before {book} wildcard
     Route::get('/books/create', [BookController::class, 'create'])->name('books.create');
-    
     Route::get('/books/{book}', [BookController::class, 'show'])->name('books.show');
     
-    // Purchase logic
-    Route::post('/books/{book}/beli', [BookController::class, 'beli'])->name('books.beli');
+    // Peminjaman logic
+    Route::post('/books/{book}/pinjam', [BookController::class, 'pinjam'])->name('books.pinjam');
+    Route::post('/history/{peminjaman}/kembali', [BookController::class, 'kembalikan'])->name('books.kembalikan');
     
-    // Only Admin can do CRUD (Store, Edit, Update, Delete)
+    // Admin & Petugas can do CRUD (Store, Edit, Update, Delete)
     Route::post('/books', [BookController::class, 'store'])->name('books.store');
     Route::get('/books/{book}/edit', [BookController::class, 'edit'])->name('books.edit');
     Route::put('/books/{book}', [BookController::class, 'update'])->name('books.update');

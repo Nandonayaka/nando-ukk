@@ -24,7 +24,7 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             
-            if (Auth::user()->role === 'admin') {
+            if (Auth::user()->role === 'administrator' || Auth::user()->role === 'petugas') {
                 return redirect()->intended('/books');
             } else {
                 return redirect()->intended('/katalog');
@@ -47,14 +47,13 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6',
-            'role' => 'required|in:admin,pelanggan',
         ]);
 
         User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $request->role,
+            'role' => 'peminjam',
         ]);
 
         return redirect()->route('login')->with('success', 'Akun berhasil dibuat. Silakan login!');

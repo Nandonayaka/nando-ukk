@@ -14,20 +14,34 @@ class DatabaseSeeder extends Seeder
 
     public function run(): void
     {
-        //Akun Admin
+        //Akun Administrator
         User::create([
             'name' => 'Irham Admin',
             'email' => 'admin@gmail.com',
             'password' => Hash::make('123456'),
-            'role' => 'admin',
+            'role' => 'administrator',
+            'nama_lengkap' => 'Irham Administrator',
+            'alamat' => 'Jakarta, Indonesia',
         ]);
 
-        //Akun Pelanggan
+        //Akun Petugas
         User::create([
-            'name' => 'Budi Pelanggan',
+            'name' => 'Nando Petugas',
+            'email' => 'petugas@gmail.com',
+            'password' => Hash::make('123456'),
+            'role' => 'petugas',
+            'nama_lengkap' => 'Nando Petugas Perpustakaan',
+            'alamat' => 'Bandung, Indonesia',
+        ]);
+
+        //Akun Peminjam
+        User::create([
+            'name' => 'Budi Peminjam',
             'email' => 'budi@gmail.com',
             'password' => Hash::make('123456'),
-            'role' => 'pelanggan',
+            'role' => 'peminjam',
+            'nama_lengkap' => 'Budi Santoso',
+            'alamat' => 'Surabaya, Indonesia',
         ]);
             
         //Buku-buku Dummy
@@ -35,6 +49,7 @@ class DatabaseSeeder extends Seeder
             [
                 'judul' => 'Dogs And Wolves',
                 'penulis' => 'Jarel Dye',
+                'penerbit' => 'Global Press',
                 'tahun_terbit' => 2023,
                 'harga' => 50000,
                 'stok' => 10,
@@ -44,6 +59,7 @@ class DatabaseSeeder extends Seeder
             [
                 'judul' => 'Negeri di Ujung Tanduk',
                 'penulis' => 'Tere Liye',
+                'penerbit' => 'Gramedia',
                 'tahun_terbit' => 2018,
                 'harga' => 85000,
                 'stok' => 5,
@@ -53,6 +69,7 @@ class DatabaseSeeder extends Seeder
             [
                 'judul' => 'Parable',
                 'penulis' => 'Brian Khrisna',
+                'penerbit' => 'Media Kita',
                 'tahun_terbit' => 2018,
                 'harga' => 70000,
                 'stok' => 12,
@@ -62,6 +79,7 @@ class DatabaseSeeder extends Seeder
             [
                 'judul' => 'Seporsi Mie Ayam Sebelum Mati',
                 'penulis' => 'Brian Khrisna',
+                'penerbit' => 'Loveable',
                 'tahun_terbit' => 2021,
                 'harga' => 125000,
                 'stok' => 1,
@@ -71,9 +89,10 @@ class DatabaseSeeder extends Seeder
             [
                 'judul' => 'Rumah Lebah',
                 'penulis' => 'Ruwi Meita',
+                'penerbit' => 'Gagas Media',
                 'tahun_terbit' => 2018,
                 'harga' => 0, // Gratis
-                'stok' => 0,
+                'stok' => 4,
                 'gambar' => 'book5.png',
                 'deskripsi' => "Rumah Lebah menggambarkan kisah misteri dan rahasia kelam yang tersembunyi di balik sebuah tempat, penuh ketegangan dan teka-teki.",
             ],
@@ -81,6 +100,12 @@ class DatabaseSeeder extends Seeder
 
         foreach ($books as $buku) {
             Book::create($buku);
+        }
+
+        // Kategori
+        $categories = ['Fiksi', 'Pengembangan Diri', 'Politik', 'Misteri'];
+        foreach ($categories as $cat) {
+            \App\Models\KategoriBuku::create(['nama_kategori' => $cat]);
         }
     }
 }

@@ -2,129 +2,123 @@
 
 @section('content')
 <!-- Recommendation Banner -->
-@if($books->count() > 0)
-<div class="mb-12 relative group rounded-[2.5rem] overflow-hidden bg-white border border-gray-100 shadow-sm h-[450px] md:h-[350px]">
-    <div id="banner-slider" class="h-full relative flex transition-transform duration-700 ease-in-out">
-        @foreach($books->take(3) as $key => $item)
-        <div class="min-w-full h-full flex flex-col md:flex-row items-center justify-center px-10 md:px-20 gap-8 md:gap-16 bg-white py-12 md:py-0">
-            <div class="flex-1 text-center md:text-left">
-                <span class="inline-block bg-black text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest mb-4">Produk Rekomendasi</span>
-                <h2 class="text-3xl md:text-5xl font-black text-black leading-tight mb-4 line-clamp-2 uppercase italic tracking-tighter">{{ $item->judul }}</h2>
-                <p class="text-[13px] text-gray-500 font-medium mb-6 line-clamp-2 max-w-md mx-auto md:mx-0">{{ $item->deskripsi }}</p>
-                <a href="{{ route('books.show', $item->id) }}" class="inline-flex items-center gap-2 bg-black text-white px-8 py-3.5 rounded-full font-bold text-[12px] hover:bg-gray-800 transition shadow-lg">
-                    Lihat Koleksi <i class="fas fa-arrow-right text-[10px]"></i>
-                </a>
+@if($featuredBooks->count() > 0)
+<div class="mb-10 relative rounded-2xl overflow-hidden bg-gray-900 shadow-lg h-[200px] md:h-[350px]">
+    <!-- Background Layer -->
+    <div id="banner-bg" class="absolute inset-0 flex transition-transform duration-700 h-full">
+        @foreach($featuredBooks as $item)
+        <div class="min-w-full h-full relative">
+            <img src="{{ Str::startsWith($item->gambar, 'http') ? $item->gambar : asset('img/' . $item->gambar) }}" class="w-full h-full object-cover blur-lg opacity-40">
+            <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent lg:bg-gradient-to-r"></div>
+        </div>
+        @endforeach
+    </div>
+
+    <!-- Content Layer -->
+    <div id="banner-content" class="relative z-10 flex transition-transform duration-700 h-full">
+        @foreach($featuredBooks as $item)
+        <div class="min-w-full h-full flex items-center px-6 md:px-16 gap-6 md:gap-12">
+            <div class="flex-shrink-0">
+                <img src="{{ Str::startsWith($item->gambar, 'http') ? $item->gambar : asset('img/' . $item->gambar) }}" class="h-32 w-24 md:h-64 md:w-44 object-cover rounded-lg shadow-2xl border border-white/20">
             </div>
-            <div class="flex-shrink-0 flex justify-center items-center">
-                <div class="relative">
-                    <div class="absolute inset-0 bg-black/5 rounded-3xl blur-xl transform translate-y-4 scale-90"></div>
-                    <img src="{{ Str::startsWith($item->gambar, 'http') ? $item->gambar : asset('img/' . $item->gambar) }}" class="h-48 md:h-64 w-36 md:w-48 object-cover rounded-3xl border border-gray-100 transform rotate-3 hover:rotate-0 transition-transform duration-500 z-10 relative">
+            <div class="flex-1 min-w-0">
+                <span class="inline-block bg-white/10 backdrop-blur-md text-white/80 px-2 py-0.5 rounded text-[8px] md:text-[10px] font-bold uppercase tracking-widest border border-white/10 mb-2">Pilihan Utama</span>
+                <h2 class="text-xl md:text-5xl font-bold text-white leading-tight truncate mb-1 md:mb-3">{{ $item->judul }}</h2>
+                <p class="text-[10px] md:text-sm text-gray-300 line-clamp-2 md:line-clamp-3 max-w-md">{{ $item->deskripsi }}</p>
+                <div class="mt-3 md:mt-6">
+                    <a href="{{ route('books.show', $item->id) }}" class="inline-flex items-center gap-2 bg-white text-black px-4 py-2 md:px-8 md:py-3 rounded-lg font-bold text-[10px] md:text-[12px] hover:bg-gray-100 transition shadow-lg">
+                        Lihat Buku
+                    </a>
                 </div>
             </div>
         </div>
         @endforeach
     </div>
     
-    <!-- Dots Navigation -->
-    <div class="absolute bottom-6 left-0 right-0 md:left-20 flex justify-center md:justify-start gap-2 h-1 overflow-visible">
-        @foreach($books->take(3) as $k => $it)
-        <button onclick="goToSlide({{ $k }})" class="dot-btn h-1.5 w-8 bg-gray-200 rounded-full transition-all duration-300" data-index="{{ $k }}"></button>
+    <!-- Controls -->
+    <div class="absolute bottom-4 left-6 md:left-16 flex gap-1.5 md:gap-2">
+        @foreach($featuredBooks as $k => $it)
+        <div class="dot-btn h-1 md:h-1.5 w-4 md:w-8 bg-white/20 rounded-full transition-all duration-300" data-index="{{ $k }}"></div>
         @endforeach
     </div>
 </div>
 
 <script>
     let currentSlide = 0;
-    const slidesCount = 3;
-    const slider = document.getElementById('banner-slider');
+    const bgSlider = document.getElementById('banner-bg');
+    const contentSlider = document.getElementById('banner-content');
     const dots = document.querySelectorAll('.dot-btn');
+    const slideCount = {{ $featuredBooks->count() }};
 
     function updateSlider() {
-        slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+        const offset = `-${currentSlide * 100}%`;
+        bgSlider.style.transform = `translateX(${offset})`;
+        contentSlider.style.transform = `translateX(${offset})`;
         dots.forEach((dot, idx) => {
-            if (idx === currentSlide) {
-                dot.classList.remove('bg-gray-200', 'w-8');
-                dot.classList.add('bg-black', 'w-12');
-            } else {
-                dot.classList.remove('bg-black', 'w-12');
-                dot.classList.add('bg-gray-200', 'w-8');
-            }
+            dot.classList.toggle('bg-white', idx === currentSlide);
+            dot.classList.toggle('w-8', idx === currentSlide && window.innerWidth < 768);
+            dot.classList.toggle('w-12', idx === currentSlide && window.innerWidth >= 768);
+            dot.classList.toggle('bg-white/20', idx !== currentSlide);
+            dot.classList.toggle('w-4', idx !== currentSlide && window.innerWidth < 768);
+            dot.classList.toggle('w-8', idx !== currentSlide && window.innerWidth >= 768);
         });
     }
 
-    function goToSlide(idx) {
-        currentSlide = idx;
+    setInterval(() => {
+        currentSlide = (currentSlide + 1) % slideCount;
         updateSlider();
-    }
-
-    function nextSlide() {
-        currentSlide = (currentSlide + 1) % slidesCount;
-        updateSlider();
-    }
-
-    setInterval(nextSlide, 5000);
-    updateSlider(); // Init
+    }, 5000);
+    updateSlider();
 </script>
 @endif
 
-<div class="flex items-center justify-between mb-10">
-    <div>
-        <h1 class="text-4xl font-extrabold tracking-tight mb-2">Jelajah</h1>
-        <p class="text-gray-500 text-[13px] font-medium">Temukan koleksi buku luar biasa kami.</p>
+<div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-6 px-1">
+    <div class="flex items-center gap-3">
+        <h1 class="text-2xl font-bold text-black tracking-tight">Semua Buku</h1>
+        <span class="bg-gray-100 text-[10px] font-black text-gray-400 px-3 py-1 rounded-full uppercase tracking-tighter">
+            {{ $books->count() }} Koleksi
+        </span>
+    </div>
+    
+    <div class="w-full md:w-96 relative">
+        <form action="{{ route('katalog.index') }}" method="GET">
+            <i class="fas fa-search absolute left-5 top-1/2 -translate-y-1/2 text-gray-300 text-xs"></i>
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari Koleksi Pustaka..." 
+                class="w-full bg-white border border-gray-100 rounded-2xl px-12 py-3.5 text-[12px] font-semibold text-black placeholder-gray-300 focus:border-black focus:ring-4 focus:ring-black/5 transition-all shadow-sm">
+        </form>
     </div>
 </div>
 
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+<div class="grid grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-8">
     @forelse($books as $book)
-        <!-- Minimalist Book Card -->
-        <a href="{{ route('books.show', $book->id) }}" class="group flex flex-col h-full border border-gray-200 bg-white rounded-3xl p-6 hover:shadow-xl hover:border-black transition-all duration-300 transform hover:-translate-y-1">
-            
-            <!-- Book Cover Image Placeholder -->
-            <div class="bg-gray-50 border border-gray-100 rounded-2xl h-56 mb-6 flex-shrink-0 flex flex-col items-center justify-center relative overflow-hidden transition-colors">
-                
-                <!-- Tag Tahun -->
-                <div class="absolute top-4 right-4 bg-white border border-gray-200 shadow-sm text-[10px] font-bold px-3 py-1 rounded-full text-black z-10">
-                    {{ $book->tahun_terbit }}
-                </div>
-                
-                @if($book->stok <= 0)
-                <div class="absolute inset-0 bg-white/60 backdrop-blur-[2px] flex items-center justify-center z-20">
-                    <span class="bg-red-500 text-white font-bold px-4 py-1.5 rounded-full text-[10px] uppercase tracking-widest">Habis</span>
-                </div>
-                @endif
-
+        <a href="{{ route('books.show', $book->id) }}" class="group flex flex-col bg-white transition-all duration-300">
+            <div class="aspect-[2/3] rounded-lg overflow-hidden mb-2 bg-gray-50 relative shadow-sm transition-shadow">
                 @if($book->gambar)
-                    <img src="{{ Str::startsWith($book->gambar, 'http') ? $book->gambar : asset('img/' . $book->gambar) }}" alt="Book Cover Art" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    <img src="{{ Str::startsWith($book->gambar, 'http') ? $book->gambar : asset('img/' . $book->gambar) }}" class="w-full h-full object-cover transition-transform group-hover:scale-105 duration-700">
                 @else
-                    <img src="https://api.dicebear.com/9.x/open-peeps/svg?seed={{ urlencode($book->judul) }}&size=120&face=smile" alt="Book Outline" class="w-32 opacity-80 group-hover:opacity-100 transition-all duration-500 group-hover:scale-110">
+                    <div class="w-full h-full flex items-center justify-center p-4 bg-gray-100">
+                        <i class="fas fa-book-open text-gray-200 text-2xl"></i>
+                    </div>
+                @endif
+
+                @if($book->stok <= 0)
+                <div class="absolute inset-0 bg-white/60 backdrop-blur-[1px] flex items-center justify-center">
+                    <span class="bg-black/80 text-white text-[7px] font-bold px-2 py-0.5 rounded-full uppercase tracking-tighter">Habis</span>
+                </div>
                 @endif
             </div>
 
-            <div class="flex flex-col flex-grow">
-                <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-2">
-                    <i class="fas fa-feather-alt text-[9px]"></i> {{ $book->penulis }}
-                </div>
-                
-                <h3 class="font-extrabold text-lg text-black mb-3 leading-tight line-clamp-2">
-                    {{ $book->judul }}
-                </h3>
-                
-                <div class="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
-                    <span class="font-bold text-[14px] text-black">
-                        {{ $book->harga ? 'Rp ' . number_format($book->harga, 0, ',', '.') : 'Gratis' }}
-                    </span>
-                    <div class="w-8 h-8 rounded-full bg-gray-50 group-hover:bg-black group-hover:text-white text-gray-300 flex items-center justify-center transition-colors">
-                        <i class="fas fa-arrow-right text-[10px]"></i>
-                    </div>
+            <div class="space-y-0.5">
+                <h3 class="font-bold text-gray-900 group-hover:text-black text-[10px] md:text-sm line-clamp-1 leading-tight">{{ $book->judul }}</h3>
+                <p class="text-[8px] md:text-[10px] font-bold text-gray-400 uppercase tracking-tight truncate">{{ $book->penulis }}</p>
+                <div class="pt-0.5">
+                    <span class="text-[9px] md:text-[11px] font-black text-black">{{ $book->harga ? 'Rp' . number_format($book->harga, 0, ',', '.') : 'GRATIS' }}</span>
                 </div>
             </div>
-            
         </a>
     @empty
-        <!-- Kosong -->
-        <div class="col-span-full py-24 text-center bg-white border border-gray-200 rounded-3xl">
-            <img src="https://api.dicebear.com/9.x/open-peeps/svg?seed=Lucky&size=120&face=smile" class="w-32 mx-auto mb-4 grayscale opacity-40">
-            <p class="font-bold text-xs tracking-widest uppercase text-gray-400">Belum ada buku di katalog.</p>
+        <div class="col-span-full py-20 text-center bg-gray-50 rounded-2xl border border-dashed border-gray-200">
+            <p class="text-gray-400 font-bold text-xs tracking-widest uppercase">Belum ada koleksi.</p>
         </div>
     @endforelse
 </div>

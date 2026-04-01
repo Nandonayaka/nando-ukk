@@ -1,93 +1,123 @@
 @extends('books.layout')
 
 @section('content')
-<div class="flex items-center justify-between mb-10">
-    <div class="flex items-center gap-4">
-        <div>
-            <h1 class="text-4xl font-extrabold tracking-tight mb-2">Detail Buku</h1>
-            <p class="text-gray-400 text-[11px] font-bold uppercase tracking-widest bg-gray-100 inline-block px-3 py-1 rounded-full">ID: #{{ str_pad($book->id, 3, '0', STR_PAD_LEFT) }}</p>
-        </div>
-    </div>
-    
-    @php
-        $backRoute = auth()->user()->role === 'admin' ? route('books.index') : route('katalog.index');
-    @endphp
-    <a href="{{ $backRoute }}" class="bg-white border border-gray-300 text-black hover:border-black px-6 py-3 rounded-full font-semibold text-[13px] transition flex items-center gap-2 shadow-sm">
-        <i class="fas fa-arrow-left text-[10px]"></i> Kembali
+@php
+    $backRoute = auth()->user()->role === 'admin' ? route('books.index') : route('katalog.index');
+@endphp
+
+<div class="mb-10">
+    <a href="{{ $backRoute }}" class="inline-flex items-center gap-2 text-gray-400 hover:text-black transition text-xs font-bold uppercase tracking-widest mb-6">
+        <i class="fas fa-arrow-left text-[10px]"></i> Kembali ke Koleksi
     </a>
-</div>
 
-<div class="bg-white border border-gray-200 rounded-3xl flex flex-col md:flex-row overflow-hidden max-w-5xl shadow-sm">
-    
-    <!-- LEFT: Image Placeholder (Dicebear or Uploaded image) -->
-    <div class="w-full md:w-5/12 bg-gray-50 p-12 flex flex-col justify-center items-center border-b md:border-b-0 md:border-r border-gray-200 relative overflow-hidden">
-        @if($book->gambar)
-            <img src="{{ Str::startsWith($book->gambar, 'http') ? $book->gambar : asset('img/' . $book->gambar) }}" alt="Book Illustration" class="w-full h-auto max-h-[400px] object-cover rounded-2xl shadow-xl hover:-translate-y-2 transition duration-500">
-        @else
-            <img src="https://api.dicebear.com/9.x/open-peeps/svg?seed={{ urlencode($book->judul) }}&size=300&face=smile" alt="Book Illustration" class="w-full max-w-[200px] md:max-w-xs hover:-translate-y-2 transition duration-500 drop-shadow-xl">
-        @endif
-    </div>
-
-    <!-- RIGHT: Info -->
-    <div class="w-full md:w-7/12 p-10 md:p-14 flex flex-col">
-
-        <div class="mb-4">
-            <span class="text-[11px] font-bold uppercase tracking-widest text-gray-400">{{ $book->penulis }}</span>
-            <h2 class="text-4xl md:text-5xl font-extrabold text-black tracking-tight leading-tight mt-1 mb-2">
-                {{ $book->judul }}
-            </h2>
+    <div class="flex flex-col md:flex-row justify-between gap-8 items-start">
+        <div class="max-w-2xl">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="h-px w-8 bg-gray-200"></div>
+                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ $book->penulis }}</span>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">{{ $book->judul }}</h1>
         </div>
         
-        <div class="flex items-center gap-4 mb-8">
-            <div class="bg-gray-100 px-4 py-1.5 rounded-full inline-flex items-center gap-2">
-                <i class="far fa-calendar-alt text-gray-500 text-[11px]"></i>
-                <span class="text-[12px] font-bold text-gray-600">{{ $book->tahun_terbit }}</span>
+        <div class="bg-gray-50 border border-gray-100 px-6 py-4 rounded-2xl flex items-center gap-4">
+            <div class="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-gray-400">
+                <i class="fas fa-boxes text-xs"></i>
             </div>
-            
-            @if($book->stok > 0)
-                <div class="bg-green-50 text-green-700 px-4 py-1.5 rounded-full inline-flex items-center gap-2">
-                    <i class="fas fa-check-circle text-[11px]"></i>
-                    <span class="text-[12px] font-bold">Stok: {{ $book->stok }}</span>
-                </div>
-            @else
-                <div class="bg-red-50 text-red-600 px-4 py-1.5 rounded-full inline-flex items-center gap-2">
-                    <i class="fas fa-times-circle text-[11px]"></i>
-                    <span class="text-[12px] font-bold">Habis</span>
-                </div>
-            @endif
-        </div>
-
-        <div class="mb-8 flex-1">
-            <h3 class="text-[13px] font-extrabold uppercase text-gray-900 mb-3 tracking-widest">Sinopsis</h3>
-            <p class="text-gray-500 text-[15px] font-medium leading-relaxed">
-                {{ $book->deskripsi ?: 'Buku yang luar biasa. Harap hubungi pustakawan jika Anda butuh penjelasan lebih rici terkait dengan konten buku yang di maksud.' }}
-            </p>
-        </div>
-
-        <div class="mt-auto flex flex-col sm:flex-row sm:items-center justify-between gap-6 border-t border-gray-100 pt-8">
             <div>
-                <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Harga</span>
-                <span class="font-bold text-3xl text-black leading-none">
-                    {{ $book->harga ? 'Rp ' . number_format($book->harga, 0, ',', '.') : 'Gratis' }}
-                </span>
+                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-1">Status Stok</p>
+                @if($book->stok > 0)
+                    <p class="text-lg font-bold text-green-600 leading-none">{{ $book->stok }} Tersedia</p>
+                @else
+                    <p class="text-lg font-bold text-red-500 leading-none">Habis</p>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-12 gap-12">
+    <!-- Cover Area -->
+    <div class="md:col-span-5 lg:col-span-4">
+        <div class="bg-white border border-gray-200 p-3 rounded-3xl shadow-sm group">
+            <div class="aspect-[3/4] rounded-2xl overflow-hidden bg-gray-50 flex items-center justify-center">
+                @if($book->gambar)
+                    <img src="{{ Str::startsWith($book->gambar, 'http') ? $book->gambar : asset('img/' . $book->gambar) }}" class="w-full h-full object-cover transition duration-700 group-hover:scale-105">
+                @else
+                    <i class="fas fa-book-open text-gray-100 text-6xl"></i>
+                @endif
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Area -->
+    <div class="md:col-span-7 lg:col-span-8 flex flex-col py-2">
+        <div class="space-y-10 flex-grow">
+            <div>
+                <h3 class="text-xs font-bold text-gray-900 uppercase tracking-widest mb-4 flex items-center gap-2">
+                    <i class="fas fa-align-left text-[10px] text-gray-300"></i> Sinopsis Koleksi
+                </h3>
+                <p class="text-gray-600 leading-relaxed text-lg">
+                    {{ $book->deskripsi ?: 'Buku ini merupakan bagian dari koleksi literasi kami yang berharga. Menyajikan wawasan mendalam dan perspektif yang unik bagi para pembacanya.' }}
+                </p>
             </div>
 
-            @if(auth()->user() && auth()->user()->role === 'pelanggan')
-                <form action="{{ route('books.beli', $book->id) }}" method="POST">
-                    @csrf
-                    @if($book->stok > 0)
-                        <button class="bg-black text-white hover:bg-gray-800 font-bold text-[13px] px-8 py-4 rounded-full flex items-center justify-center gap-3 transition shadow-md w-full sm:w-auto">
-                            <i class="fas fa-shopping-bag"></i> Beli Sekarang
-                        </button>
-                    @else
-                        <button type="button" disabled class="bg-gray-200 text-gray-400 font-bold text-[13px] px-8 py-4 rounded-full flex items-center justify-center gap-3 w-full sm:w-auto cursor-not-allowed">
-                            <i class="fas fa-shopping-bag"></i> Stok Habis
-                        </button>
-                    @endif
-                </form>
-            @endif
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-8 pt-8 border-t border-gray-100">
+                <div>
+                    <h4 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Penulis</h4>
+                    <p class="font-bold text-gray-900">{{ $book->penulis }}</p>
+                </div>
+                <div>
+                    <h4 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Tahun Rilis</h4>
+                    <p class="font-bold text-gray-900">{{ $book->tahun_terbit }}</p>
+                </div>
+                <div>
+                    <h4 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Penerbit</h4>
+                    <p class="font-bold text-gray-900">{{ $book->penerbit ?: 'Penerbit Umum' }}</p>
+                </div>
+            </div>
         </div>
 
+        <div class="mt-12 p-8 bg-gray-900 rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl mb-20 lg:mb-0">
+            <div class="text-center sm:text-left">
+                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Status Ketersediaan</p>
+                <p class="text-3xl font-bold text-white">
+                    {{ $book->stok > 0 ? 'Tersedia' : 'Kosong' }}
+                </p>
+            </div>
+
+            @if(auth()->user() && auth()->user()->role === 'peminjam')
+                <div class="hidden sm:block">
+                    <form action="{{ route('books.pinjam', $book->id) }}" method="POST">
+                        @csrf
+                        @if($book->stok > 0)
+                            <button class="bg-white text-black px-10 py-4 rounded-xl font-bold text-sm hover:bg-gray-100 transition shadow-lg flex items-center gap-3">
+                                <i class="fas fa-bookmark text-xs"></i> Pinjam Koleksi
+                            </button>
+                        @else
+                            <button type="button" disabled class="bg-gray-800 text-gray-500 px-10 py-4 rounded-xl font-bold text-sm cursor-not-allowed">
+                                Stok Habis
+                            </button>
+                        @endif
+                    </form>
+                </div>
+                
+                <!-- Mobile Fixed Action Bar -->
+                <div class="sm:hidden fixed bottom-[72px] left-0 right-0 p-4 bg-white/80 backdrop-blur-md border-t border-gray-100 z-40">
+                    <form action="{{ route('books.pinjam', $book->id) }}" method="POST">
+                        @csrf
+                        @if($book->stok > 0)
+                            <button class="w-full bg-black text-white py-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-3 shadow-xl">
+                                <i class="fas fa-bookmark text-xs"></i> Pinjam Buku
+                            </button>
+                        @else
+                            <button type="button" disabled class="w-full bg-gray-200 text-gray-400 py-4 rounded-2xl font-bold text-sm cursor-not-allowed">
+                                Stok Habis
+                            </button>
+                        @endif
+                    </form>
+                </div>
+            @endif
+        </div>
     </div>
 </div>
 @endsection

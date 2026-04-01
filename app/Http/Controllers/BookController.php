@@ -3,44 +3,93 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Models\Peminjaman;
 use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $books = Book::all();
+        $search = $request->query('search');
+        $books = Book::when($search, function($query, $search) {
+            return $query->where('judul', 'like', "%{$search}%")
+                         ->orWhere('penulis', 'like', "%{$search}%")
+                         ->orWhere('penerbit', 'like', "%{$search}%");
+        })->get();
         return view('books.index', compact('books'));
     }
 
-    public function katalog()
+    public function katalog(Request $request)
     {
-        $books = Book::all();
-        return view('pelanggan.katalog', compact('books'));
+        $search = $request->query('search');
+        
+        // Banner tetap (tidak terpengaruh search)
+        $featuredBooks = Book::latest()->take(5)->get();
+
+        // Grid terfilter oleh search
+        $books = Book::when($search, function($query, $search) {
+            return $query->where('judul', 'like', "%{$search}%")
+                         ->orWhere('penulis', 'like', "%{$search}%")
+                         ->orWhere('penerbit', 'like', "%{$search}%");
+        })->get();
+
+        return view('pelanggan.katalog', compact('books', 'featuredBooks'));
     }
 
     public function history()
     {
-        $transactions = \App\Models\Transaction::where('user_id', auth()->id())->with('book')->latest()->get();
-        return view('pelanggan.history', compact('transactions'));
+        if (auth()->user()->role === 'administrator' || auth()->user()->role === 'petugas') {
+            $peminjamans = Peminjaman::with(['book', 'user'])->latest()->get();
+        } else {
+            $peminjamans = Peminjaman::where('user_id', auth()->id())->with('book')->latest()->get();
+        }
+        return view('pelanggan.history', compact('peminjamans'));
     }
 
-    public function beli(Request $request, Book $book)
+    public function pinjam(Request $request, Book $book)
     {
         if ($book->stok <= 0) {
             return back()->withErrors(['stok' => 'Maaf, buku ini sedang tidak tersedia (habis).']);
         }
 
+        // Check if already borrowed
+        $alreadyBorrowed = Peminjaman::where('user_id', auth()->id())
+            ->where('book_id', $book->id)
+            ->where('status_peminjaman', 'Pinjam')
+            ->exists();
+
+        if ($alreadyBorrowed) {
+            return back()->withErrors(['peminjaman' => 'Anda sedang meminjam buku ini.']);
+        }
+
         $book->decrement('stok');
 
-        \App\Models\Transaction::create([
+        Peminjaman::create([
             'user_id' => auth()->id(),
             'book_id' => $book->id,
-            'status' => 'Berhasil'
+            'tanggal_peminjaman' => now(),
+            'status_peminjaman' => 'Pinjam'
         ]);
 
-        $route = auth()->user()->role === 'admin' ? 'books.index' : 'katalog.index';
-        return redirect()->route($route)->with('success', 'Berhasil melakukan interaksi/pembelian buku: ' . $book->judul);
+        $isAdmin = (auth()->user()->role === 'administrator' || auth()->user()->role === 'petugas');
+        $route = $isAdmin ? 'books.index' : 'katalog.index';
+        return redirect()->route($route)->with('success', 'Berhasil meminjam buku: ' . $book->judul);
+    }
+
+    public function kembalikan(Peminjaman $peminjaman)
+    {
+        if ($peminjaman->status_peminjaman === 'Kembali') {
+            return back()->withErrors(['status' => 'Buku ini sudah dikembalikan.']);
+        }
+
+        $peminjaman->update([
+            'tanggal_pengembalian' => now(),
+            'status_peminjaman' => 'Kembali'
+        ]);
+
+        $peminjaman->book()->increment('stok');
+
+        return back()->with('success', 'Buku berhasil dikembalikan.');
     }
 
     public function create()
@@ -53,6 +102,7 @@ class BookController extends Controller
         $request->validate([
             'judul' => 'required',
             'penulis' => 'required',
+            'penerbit' => 'nullable',
             'tahun_terbit' => 'required|numeric',
             'deskripsi' => 'nullable|string',
             'harga' => 'nullable|numeric',
@@ -89,6 +139,7 @@ class BookController extends Controller
         $request->validate([
             'judul' => 'required',
             'penulis' => 'required',
+            'penerbit' => 'nullable',
             'tahun_terbit' => 'required|numeric',
             'deskripsi' => 'nullable|string',
             'harga' => 'nullable|numeric',
