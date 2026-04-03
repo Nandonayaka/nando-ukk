@@ -1,0 +1,26 @@
+﻿
+   INFO  Running migrations.  
+
+  2026_04_03_025813_add_due_date_and_fine_to_peminjamans_table  26.90ms FAIL
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[01000]: Warning: 1265 Data truncated for column 'tanggal_peminjaman' at row 1 (Connection: mysql, Host: 127.0.0.1, Port: 3306, Database: nando_perpus, SQL: alter table `peminjamans` modify `tanggal_peminjaman` datetime not null)
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:841
+    837Γûò             $exceptionType = ($isUniqueConstraintError = $this->isUniqueConstraintError($e))
+    838Γûò                 ? UniqueConstraintViolationException::class
+    839Γûò                 : QueryException::class;
+    840Γûò 
+  Γ₧£ 841Γûò             $exception = new $exceptionType(
+    842Γûò                 $this->getNameWithReadWriteType(),
+    843Γûò                 $query,
+    844Γûò                 $this->prepareBindings($bindings),
+    845Γûò                 $e,
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connection.php:587
+      PDOException::("SQLSTATE[01000]: Warning: 1265 Data truncated for column 'tanggal_peminjaman' at row 1")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connection.php:587
+      PDOStatement::execute()
+

@@ -2,7 +2,7 @@
 
 @section('content')
 @php
-    $backRoute = auth()->user()->role === 'admin' ? route('books.index') : route('katalog.index');
+    $backRoute = auth()->user()->role === 'administrator' ? route('books.index') : route('katalog.index');
 @endphp
 
 <div class="mb-10">
@@ -87,37 +87,119 @@
 
             @if(auth()->user() && auth()->user()->role === 'peminjam')
                 <div class="hidden sm:block">
-                    <form action="{{ route('books.pinjam', $book->id) }}" method="POST">
-                        @csrf
-                        @if($book->stok > 0)
-                            <button class="bg-white text-black px-10 py-4 rounded-xl font-bold text-sm hover:bg-gray-100 transition shadow-lg flex items-center gap-3">
-                                <i class="fas fa-bookmark text-xs"></i> Pinjam Koleksi
-                            </button>
-                        @else
-                            <button type="button" disabled class="bg-gray-800 text-gray-500 px-10 py-4 rounded-xl font-bold text-sm cursor-not-allowed">
-                                Stok Habis
-                            </button>
-                        @endif
-                    </form>
+                    @if($book->stok > 0)
+                        <button onclick="openBorrowModal()" class="bg-white text-black px-10 py-4 rounded-xl font-bold text-sm hover:bg-gray-100 transition shadow-lg flex items-center gap-3">
+                            <i class="fas fa-bookmark text-xs"></i> Pinjam Koleksi
+                        </button>
+                    @else
+                        <button type="button" disabled class="bg-gray-800 text-gray-500 px-10 py-4 rounded-xl font-bold text-sm cursor-not-allowed">
+                            Stok Habis
+                        </button>
+                    @endif
                 </div>
                 
                 <!-- Mobile Fixed Action Bar -->
                 <div class="sm:hidden fixed bottom-[72px] left-0 right-0 p-4 bg-white/80 backdrop-blur-md border-t border-gray-100 z-40">
-                    <form action="{{ route('books.pinjam', $book->id) }}" method="POST">
-                        @csrf
-                        @if($book->stok > 0)
-                            <button class="w-full bg-black text-white py-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-3 shadow-xl">
-                                <i class="fas fa-bookmark text-xs"></i> Pinjam Buku
-                            </button>
-                        @else
-                            <button type="button" disabled class="w-full bg-gray-200 text-gray-400 py-4 rounded-2xl font-bold text-sm cursor-not-allowed">
-                                Stok Habis
-                            </button>
-                        @endif
-                    </form>
+                    @if($book->stok > 0)
+                        <button onclick="openBorrowModal()" class="w-full bg-black text-white py-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-3 shadow-xl">
+                            <i class="fas fa-bookmark text-xs"></i> Pinjam Buku
+                        </button>
+                    @else
+                        <button type="button" disabled class="w-full bg-gray-200 text-gray-400 py-4 rounded-2xl font-bold text-sm cursor-not-allowed">
+                            Stok Habis
+                        </button>
+                    @endif
                 </div>
             @endif
         </div>
     </div>
 </div>
+
+<!-- Borrow Modal -->
+<div id="borrowModal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeBorrowModal()"></div>
+    
+    <!-- Modal Content -->
+    <div class="relative bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden transform transition-all scale-95 opacity-0 duration-300" id="modalContainer">
+        <div class="p-8 md:p-12">
+            <div class="mb-8">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="h-px w-8 bg-gray-200"></div>
+                    <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Konfirmasi Peminjaman</span>
+                </div>
+                <h2 class="text-3xl font-bold text-black leading-tight mb-2">Pilih Waktu Kembali</h2>
+                <p class="text-gray-400 text-xs font-medium">Buku: <span class="text-black font-bold">{{ $book->judul }}</span></p>
+            </div>
+
+            <form action="{{ route('books.pinjam', $book->id) }}" method="POST" class="space-y-6">
+                @csrf
+                <div class="space-y-2">
+                    <label for="tanggal_jatuh_tempo" class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Kapan Anda Akan Mengembalikan?</label>
+                    <div class="relative group">
+                        <i class="fas fa-calendar-alt absolute left-5 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-black transition-colors z-10"></i>
+                        <input type="text" name="tanggal_jatuh_tempo" id="tanggal_jatuh_tempo" required
+                            class="w-full bg-gray-50 border border-gray-100 rounded-2xl px-12 py-4 text-sm font-bold text-black focus:border-black focus:ring-4 focus:ring-black/5 transition-all outline-none"
+                            placeholder="Klik untuk pilih waktu...">
+                    </div>
+                </div>
+
+                <div class="pt-4 flex flex-col gap-3">
+                    <button id="confirmBorrowBtn" type="submit" class="w-full bg-black text-white py-4 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-gray-800 transition active:scale-95 shadow-lg shadow-black/10">
+                        Konfirmasi Peminjaman
+                    </button>
+                    <button type="button" onclick="closeBorrowModal()" class="w-full bg-white text-gray-400 py-3 rounded-2xl font-bold text-[10px] uppercase tracking-widest hover:text-black transition">
+                        Batalkan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    let fp;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        fp = flatpickr("#tanggal_jatuh_tempo", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            altInput: true,
+            altFormat: "d/m/y H:i",
+            minDate: "today",
+            locale: "id",
+            disableMobile: "true",
+            onReady: function(selectedDates, dateStr, instance) {
+                // Ensure alt input looks like our design
+                if(instance.altInput) {
+                    instance.altInput.classList.add('w-full', 'bg-gray-50', 'border', 'border-gray-100', 'rounded-2xl', 'px-12', 'py-4', 'text-sm', 'font-bold', 'text-black', 'focus:border-black', 'focus:ring-4', 'focus:ring-black/5', 'transition-all', 'outline-none');
+                    instance.altInput.placeholder = "Pilih Hari & Jam Kembali";
+                    instance.input.style.display = "none";
+                }
+            }
+        });
+    });
+
+    function openBorrowModal() {
+        const modal = document.getElementById('borrowModal');
+        const container = document.getElementById('modalContainer');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        setTimeout(() => {
+            container.classList.remove('scale-95', 'opacity-0');
+            container.classList.add('scale-100', 'opacity-100');
+        }, 10);
+    }
+
+    function closeBorrowModal() {
+        const modal = document.getElementById('borrowModal');
+        const container = document.getElementById('modalContainer');
+        container.classList.remove('scale-100', 'opacity-100');
+        container.classList.add('scale-95', 'opacity-0');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }, 300);
+    }
+</script>
 @endsection

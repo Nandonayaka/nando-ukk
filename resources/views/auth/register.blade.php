@@ -23,11 +23,11 @@
             
             <div class="mb-10 text-left">
                 <h1 class="text-3xl font-bold tracking-tight text-black mb-1">Daftar Akun</h1>
-                <p class="text-gray-400 text-sm font-medium">Mulai literasi digital Anda di Pustaka.</p>
+                <p class="text-gray-400 text-base font-medium">Mulai literasi digital Anda di Pustaka.</p>
             </div>
 
             @if ($errors->any())
-                <div class="bg-red-50 text-red-600 px-5 py-3 rounded-xl mb-6 border border-red-100 text-[11px] font-bold uppercase tracking-wider">
+                <div class="bg-red-50 text-red-600 px-5 py-3 rounded-xl mb-6 border border-red-100 text-sm font-bold uppercase tracking-wider">
                     {{ $errors->first() }}
                 </div>
             @endif
@@ -35,36 +35,36 @@
             <form action="{{ route('register.post') }}" method="POST" class="space-y-4">
                 @csrf
                 <div class="space-y-1.5">
-                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Nama Lengkap</label>
+                    <label class="text-xs font-bold text-gray-400 uppercase tracking-widest">Nama Lengkap</label>
                     <input type="text" name="name" value="{{ old('name') }}" 
-                           class="w-full px-5 py-3.5 rounded-xl border border-gray-200 focus:border-black outline-none transition text-sm font-medium" 
+                           class="w-full px-5 py-3.5 rounded-xl border border-gray-200 focus:border-black outline-none transition text-base font-medium" 
                            placeholder="Nama Anda" required>
                 </div>
 
                 <div class="space-y-1.5">
-                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Alamat Email</label>
+                    <label class="text-xs font-bold text-gray-400 uppercase tracking-widest">Alamat Email</label>
                     <input type="email" name="email" value="{{ old('email') }}" 
-                           class="w-full px-5 py-3.5 rounded-xl border border-gray-200 focus:border-black outline-none transition text-sm font-medium" 
+                           class="w-full px-5 py-3.5 rounded-xl border border-gray-200 focus:border-black outline-none transition text-base font-medium" 
                            placeholder="email@pustakaku.com" required>
                 </div>
                 
                 <div class="space-y-1.5">
-                    <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Kata Sandi</label>
+                    <label class="text-xs font-bold text-gray-400 uppercase tracking-widest">Kata Sandi</label>
                     <input type="password" name="password" 
-                           class="w-full px-5 py-3.5 rounded-xl border border-gray-200 focus:border-black outline-none transition text-sm font-medium" 
+                           class="w-full px-5 py-3.5 rounded-xl border border-gray-200 focus:border-black outline-none transition text-base font-medium" 
                            placeholder="••••••••" required>
                 </div>
 
                 <div class="pt-4">
                     <button type="submit" 
-                            class="w-full py-4 bg-black text-white hover:bg-gray-800 font-bold text-xs rounded-xl transition shadow-md uppercase tracking-widest active:scale-95">
+                            class="w-full py-4 bg-black text-white hover:bg-gray-800 font-bold text-sm rounded-xl transition shadow-md uppercase tracking-widest active:scale-95">
                         DAFTAR
                     </button>
                 </div>
             </form>
 
             <div class="mt-12 pt-8 border-t border-gray-50 text-center">
-                <p class="text-xs text-gray-400 font-bold">
+                <p class="text-sm text-gray-400 font-bold">
                     Sudah punya akun? 
                     <a href="{{ route('login') }}" class="text-black hover:underline ml-1 uppercase">Masuk Di Sini</a>
                 </p>

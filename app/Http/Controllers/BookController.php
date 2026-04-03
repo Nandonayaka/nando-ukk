@@ -48,6 +48,14 @@ class BookController extends Controller
 
     public function pinjam(Request $request, Book $book)
     {
+        $request->validate([
+            'tanggal_jatuh_tempo' => 'required|date|after:now',
+        ], [
+            'tanggal_jatuh_tempo.required' => 'Mohon tentukan waktu pengembalian buku.',
+            'tanggal_jatuh_tempo.date' => 'Format waktu tidak valid.',
+            'tanggal_jatuh_tempo.after' => 'Waktu pengembalian harus lebih lambat dari waktu sekarang.',
+        ]);
+
         if ($book->stok <= 0) {
             return back()->withErrors(['stok' => 'Maaf, buku ini sedang tidak tersedia (habis).']);
         }
@@ -68,6 +76,7 @@ class BookController extends Controller
             'user_id' => auth()->id(),
             'book_id' => $book->id,
             'tanggal_peminjaman' => now(),
+            'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo,
             'status_peminjaman' => 'Pinjam'
         ]);
 
@@ -82,14 +91,49 @@ class BookController extends Controller
             return back()->withErrors(['status' => 'Buku ini sudah dikembalikan.']);
         }
 
+        $now = now();
+        $denda = 0;
+        
+        // Check if late (more than the specified due date)
+        if ($peminjaman->tanggal_jatuh_tempo && $now->gt($peminjaman->tanggal_jatuh_tempo)) {
+            // Fine logic: Rp 12.000 just for being late (even 1 second)
+            $denda = 12000;
+            
+            // If they are more than one day late, we add per day.
+            $diffInDays = $now->diffInDays($peminjaman->tanggal_jatuh_tempo);
+            if ($diffInDays > 0) {
+                $denda += ($diffInDays * 12000); // 12rb per hari
+            }
+        }
+
         $peminjaman->update([
-            'tanggal_pengembalian' => now(),
-            'status_peminjaman' => 'Kembali'
+            'tanggal_pengembalian' => $now,
+            'status_peminjaman' => 'Kembali',
+            'denda' => $denda,
+            'status_denda' => $denda > 0 ? 'Belum Lunas' : null
         ]);
 
         $peminjaman->book()->increment('stok');
 
-        return back()->with('success', 'Buku berhasil dikembalikan.');
+        $message = 'Buku berhasil dikembalikan.';
+        if ($denda > 0) {
+            $message .= ' Anda terlambat dan dikenakan denda sebesar Rp ' . number_format($denda, 0, ',', '.') . '. Mohon segera lakukan pembayaran.';
+        }
+
+        return back()->with('success', $message);
+    }
+
+    public function bayarDenda(Peminjaman $peminjaman)
+    {
+        if ($peminjaman->status_denda !== 'Belum Lunas') {
+            return back()->withErrors(['denda' => 'Tidak ada denda yang perlu dibayar.']);
+        }
+
+        $peminjaman->update([
+            'status_denda' => 'Lunas'
+        ]);
+
+        return back()->with('success', 'Denda berhasil dibayar. Terima kasih!');
     }
 
     public function create()

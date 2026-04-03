@@ -39,6 +39,7 @@ Route::middleware(['auth'])->group(function () {
     // Peminjaman logic
     Route::post('/books/{book}/pinjam', [BookController::class, 'pinjam'])->name('books.pinjam');
     Route::post('/history/{peminjaman}/kembali', [BookController::class, 'kembalikan'])->name('books.kembalikan');
+    Route::post('/history/{peminjaman}/bayar', [BookController::class, 'bayarDenda'])->name('books.bayar-denda');
     
     // Admin & Petugas can do CRUD (Store, Edit, Update, Delete)
     Route::post('/books', [BookController::class, 'store'])->name('books.store');
