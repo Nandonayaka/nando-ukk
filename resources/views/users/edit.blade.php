@@ -28,23 +28,38 @@
             </div>
             
             <div class="space-y-2">
-                <label class="block text-[11px] font-bold uppercase tracking-widest text-gray-500">Password Baru</label>
-                <input type="password" name="password" class="w-full px-5 py-3.5 rounded-2xl bg-gray-50 border border-gray-200 focus:border-black focus:bg-white focus:ring-0 outline-none transition text-[13px] font-medium" placeholder="Kosongkan jika tidak ingin ganti">
+                <label class="block text-[11px] font-bold uppercase tracking-widest text-gray-500">Nama Lengkap</label>
+                <input type="text" name="nama_lengkap" value="{{ old('nama_lengkap', $user->nama_lengkap) }}" class="w-full px-5 py-3.5 rounded-2xl bg-gray-50 border border-gray-200 focus:border-black focus:bg-white focus:ring-0 outline-none transition text-[13px] font-medium">
             </div>
 
             <div class="space-y-2">
                 <label class="block text-[11px] font-bold uppercase tracking-widest text-gray-500">Role *</label>
-                <select name="role" class="w-full px-5 py-3.5 rounded-2xl bg-gray-50 border border-gray-200 focus:border-black focus:bg-white focus:ring-0 outline-none transition text-[13px] font-bold bg-white cursor-pointer appearance-none">
-                    <option value="peminjam" {{ $user->role === 'peminjam' ? 'selected' : '' }}>Peminjam</option>
-                    <option value="petugas" {{ $user->role === 'petugas' ? 'selected' : '' }}>Petugas</option>
-                    <option value="administrator" {{ $user->role === 'administrator' ? 'selected' : '' }}>Administrator</option>
-                </select>
+                @php
+                    $roleOptions = collect([
+                        (object)['id' => 'peminjam', 'nama_kategori' => 'PEMINJAM'],
+                        (object)['id' => 'administrator', 'nama_kategori' => 'ADMINISTRATOR']
+                    ]);
+                @endphp
+                @include('partials.filter-dropdown', [
+                    'name' => 'role',
+                    'options' => $roleOptions,
+                    'selected' => old('role', $user->role),
+                    'placeholder' => 'PILIH ROLE',
+                    'class' => 'no-auto-submit',
+                    'align' => 'left-0'
+                ])
             </div>
         </div>
 
         <div class="space-y-2 pt-2">
-            <label class="block text-[11px] font-bold uppercase tracking-widest text-gray-500">Nama Lengkap</label>
-            <input type="text" name="nama_lengkap" value="{{ old('nama_lengkap', $user->nama_lengkap) }}" class="w-full px-5 py-3.5 rounded-2xl bg-gray-50 border border-gray-200 focus:border-black focus:bg-white focus:ring-0 outline-none transition text-[13px] font-medium">
+            <label class="block text-[11px] font-bold uppercase tracking-widest text-gray-500">Ganti Password</label>
+            <div class="relative">
+                <input type="password" id="password" name="password" placeholder="Kosongkan jika tidak ingin ganti" class="w-full px-5 py-3.5 pr-12 rounded-2xl bg-gray-50 border border-gray-200 focus:border-black focus:bg-white focus:ring-4 focus:ring-black/5 outline-none transition text-[13px] font-medium">
+                <button type="button" onclick="togglePassword('password', this)" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition p-2">
+                    <i class="fas fa-eye text-sm"></i>
+                </button>
+            </div>
+            <p class="text-[9px] text-gray-400 font-medium italic">Minimal 6 karakter jika ingin mengganti.</p>
         </div>
 
         <div class="space-y-2 pt-2">
@@ -59,4 +74,19 @@
         </div>
     </form>
 </div>
+<script>
+    function togglePassword(inputId, btn) {
+        const input = document.getElementById(inputId);
+        const icon = btn.querySelector('i');
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+</script>
 @endsection

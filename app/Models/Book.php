@@ -27,4 +27,9 @@ class Book extends Model
     {
         return $this->belongsToMany(KategoriBuku::class, 'kategoribuku_relasi', 'book_id', 'kategori_id');
     }
+
+    public function koleksipribadis()
+    {
+        return $this->hasMany(KoleksiPribadi::class, 'book_id');
+    }
 }

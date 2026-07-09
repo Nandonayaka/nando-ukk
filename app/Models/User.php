@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'role', 'nama_lengkap', 'alamat'])]
+#[Fillable(['name', 'email', 'password', 'role', 'nama_lengkap', 'alamat', 'pfp'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -43,5 +43,15 @@ class User extends Authenticatable
     public function koleksiPribadi()
     {
         return $this->hasMany(KoleksiPribadi::class);
+    }
+
+    public function inboxMessages()
+    {
+        return $this->hasMany(InboxMessage::class)->orderBy('created_at', 'desc');
+    }
+
+    public function unreadInboxCount()
+    {
+        return $this->inboxMessages()->where('is_read', false)->count();
     }
 }

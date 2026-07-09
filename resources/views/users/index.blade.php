@@ -5,7 +5,7 @@
     <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-6">
         <div>
             <h1 class="text-3xl font-bold tracking-tight text-gray-900">Kelola Anggota</h1>
-            <p class="text-gray-500 text-sm">Manajemen akun administrator, petugas, dan peminjam perpustakaan.</p>
+            <p class="text-gray-500 text-sm">Manajemen akun administrator dan peminjam perpustakaan.</p>
         </div>
         
         <div class="flex flex-col sm:flex-row items-center gap-4">
@@ -39,8 +39,6 @@
                         <td class="px-6 py-6">
                             @if($user->role === 'administrator')
                                 <span class="bg-red-50 text-red-600 px-3 py-1 rounded-full text-[10px] font-bold border border-red-100">Administrator</span>
-                            @elseif($user->role === 'petugas')
-                                <span class="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-[10px] font-bold border border-blue-100">Petugas</span>
                             @else
                                 <span class="bg-green-50 text-green-600 px-3 py-1 rounded-full text-[10px] font-bold border border-green-100">Peminjam</span>
                             @endif
@@ -52,10 +50,10 @@
                                     <i class="fas fa-pen text-[10px]"></i>
                                 </a>
                                 @if(auth()->id() !== $user->id)
-                                <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="m-0 inline-block">
+                                <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="m-0 inline-block delete-user-form">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" onclick="return confirm('Hapus anggota ini?')" class="w-8 h-8 flex items-center justify-center bg-red-50 rounded-lg text-red-400 hover:text-red-600 transition">
+                                    <button type="button" class="w-8 h-8 flex items-center justify-center bg-red-50 rounded-lg text-red-400 hover:text-red-600 transition btn-delete-user">
                                         <i class="fas fa-trash text-xs"></i>
                                     </button>
                                 </form>
@@ -68,4 +66,34 @@
         </table>
     </div>
 </div>
+
+<div class="mt-8">
+    {{ $users->links('partials.pagination') }}
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const deleteButtons = document.querySelectorAll('.btn-delete-user');
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const form = this.closest('.delete-user-form');
+            Swal.fire({
+                title: 'Hapus Anggota?',
+                html: 'Tindakan ini <b>tidak dapat</b> dibatalkan!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#000',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            })
+        });
+    });
+});
+</script>
 @endsection

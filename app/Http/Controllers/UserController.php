@@ -10,7 +10,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::latest()->get();
+        $users = User::latest()->paginate(15);
         return view('users.index', compact('users'));
     }
 
@@ -25,7 +25,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6',
-            'role' => 'required|in:administrator,petugas,peminjam',
+            'role' => 'required|in:administrator,peminjam',
             'nama_lengkap' => 'nullable|string',
             'alamat' => 'nullable|string',
         ]);
@@ -46,13 +46,16 @@ class UserController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,'.$user->id,
-            'role' => 'required|in:administrator,petugas,peminjam',
+            'password' => 'nullable|string|min:6',
+            'role' => 'required|in:administrator,peminjam',
             'nama_lengkap' => 'nullable|string',
             'alamat' => 'nullable|string',
         ]);
 
         if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);
+        } else {
+            unset($data['password']);
         }
 
         $user->update($data);
